@@ -1,25 +1,50 @@
-import React from 'react';
-import './Testimonials.css';
-
-const testimonials = [
-  { id: 1, name: 'Иван Иванов', text: 'Отличные услуги! Рекомендую.', avatar: 'https://via.placeholder.com/80' },
-  { id: 2, name: 'Мария Петрова', text: 'Очень профессионально и быстро.', avatar: 'https://via.placeholder.com/80' },
-  { id: 3, name: 'Алексей Сидоров', text: 'Спасибо, результат превзошел ожидания.', avatar: 'https://via.placeholder.com/80' },
-];
+// C:\Users\ASUS Vivobook\PycharmProjects\izotoff.ru\business_site\frontend\src\pages\Testimonials.js
+import { useEffect, useState } from "react";
+import api from "../Api";
+import "./Testimonials.css";
 
 export default function Testimonials() {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let ignore = false;
+    (async () => {
+      try {
+        setLoading(true);
+        setError("");
+        const res = await api.get("/testimonials/");
+        const data = Array.isArray(res.data) ? res.data : res.data.results ?? [];
+        if (!ignore) setItems(data);
+      } catch (e) {
+        console.error(e);
+        if (!ignore) setError("Не удалось загрузить отзывы.");
+      } finally {
+        if (!ignore) setLoading(false);
+      }
+    })();
+    return () => { ignore = true; };
+  }, []);
+
+  if (loading) return <div className="container"><p>Загрузка…</p></div>;
+  if (error)   return <div className="container"><p className="error">{error}</p></div>;
+  if (!items.length) return <div className="container"><p>Отзывы пока отсутствуют.</p></div>;
+
   return (
-    <div className="testimonials-section container">
-      <h2>Отзывы клиентов</h2>
-      <div className="testimonials-grid">
-        {testimonials.map(t => (
-          <div className="testimonial-card" key={t.id}>
-            <img src={t.avatar} alt={t.name} />
-            <p className="testimonial-text">"{t.text}"</p>
-            <p className="testimonial-name">- {t.name}</p>
-          </div>
+    <main className="container">
+      <h1>Отзывы</h1>
+      <ul className="list">
+        {items.map(t => (
+          <li key={t.id} className="testimonial">
+            {t.avatar_url && <img className="avatar" src={t.avatar_url} alt={t.author} />}
+            <div className="content">
+              <p className="text">“{t.text}”</p>
+              <p className="meta">— {t.author}{t.role ? `, ${t.role}` : ""}</p>
+            </div>
+          </li>
         ))}
-      </div>
-    </div>
+      </ul>
+    </main>
   );
 }

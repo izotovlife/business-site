@@ -1,58 +1,29 @@
-// Header.js
-import React from 'react';
-import { Link } from 'react-router-dom';
+// C:\Users\ASUS Vivobook\PycharmProjects\izotoff.ru\business_site\frontend\src\components\Header.js
+import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
+import "./Header.css";
 
-export default function Header() {
+export default function Header(){
+  const [open, setOpen] = useState(false);
+
   return (
-    <header style={styles.header}>
-      <div style={styles.container}>
-        <div style={styles.logo}>
-          <Link to="/" style={styles.logoText}>Izotoff.ru</Link>
-        </div>
-        <nav style={styles.nav}>
-          <Link to="/" style={styles.navLink}>Главная</Link>
-          <Link to="/services" style={styles.navLink}>Услуги</Link>
-          <Link to="/portfolio" style={styles.navLink}>Портфолио</Link>
-          <Link to="/contacts" style={styles.navLink}>Контакты</Link>
+    <header className="site-header">
+      <div className="container header-row">
+        <NavLink to="/" className="brand" onClick={()=>setOpen(false)}>
+          Изотов
+        </NavLink>
+
+        <button className="burger" aria-label="Меню" onClick={()=>setOpen(v=>!v)}>
+          <span/><span/><span/>
+        </button>
+
+        <nav className={`nav ${open ? "open" : ""}`}>
+          <NavLink to="/services" className="nav-link" onClick={()=>setOpen(false)}>Услуги</NavLink>
+          <NavLink to="/portfolio" className="nav-link" onClick={()=>setOpen(false)}>Портфолио</NavLink>
+          <NavLink to="/testimonials" className="nav-link" onClick={()=>setOpen(false)}>Отзывы</NavLink>
         </nav>
       </div>
     </header>
   );
 }
 
-const styles = {
-  header: {
-    backgroundColor: '#2C3E50',
-    padding: '15px 0',
-    color: '#fff',
-    position: 'sticky',
-    top: 0,
-    zIndex: 1000,
-  },
-  container: {
-    width: '90%',
-    maxWidth: '1200px',
-    margin: '0 auto',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  logo: {
-    fontSize: '24px',
-    fontWeight: 'bold',
-  },
-  logoText: {
-    color: '#fff',
-    textDecoration: 'none',
-  },
-  nav: {
-    display: 'flex',
-    gap: '20px',
-  },
-  navLink: {
-    color: '#fff',
-    textDecoration: 'none',
-    fontWeight: '500',
-    transition: '0.3s',
-  },
-};
