@@ -110,10 +110,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # URL страницы логина (используется декоратором @login_required)
 LOGIN_URL = "/accounts/login/"
-# После успешного входа перенаправляем на генерацию одноразовой ссылки
-LOGIN_REDIRECT_URL = "/admin-link/"
-# После выхода отправляем обратно на форму входа
-LOGOUT_REDIRECT_URL = LOGIN_URL
 
 # === DRF ===
 REST_FRAMEWORK = {

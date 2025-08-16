@@ -9,7 +9,7 @@ from drf_spectacular.views import (
 from django.http import JsonResponse, HttpRequest
 import logging
 
-from .views_security import create_admin_link, use_admin_link
+from .views_security import create_admin_link, use_admin_link, api_login, api_logout
 
 log = logging.getLogger(__name__)
 
@@ -45,7 +45,8 @@ urlpatterns = [
     path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
 
     # Аутентификация (login/logout)
-    path("accounts/", include("django.contrib.auth.urls")),
+    path("accounts/login/", api_login, name="login"),
+    path("accounts/logout/", api_logout, name="logout"),
 
     # Одноразовые ссылки на админку
     path("admin-link/", create_admin_link, name="create-admin-link"),        # отдать одноразовый URL (только staff)
