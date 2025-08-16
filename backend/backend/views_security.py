@@ -5,6 +5,7 @@ from django.core.cache import cache
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import JsonResponse, HttpRequest
 from django.shortcuts import redirect
+from django.urls import reverse
 from django.utils import timezone
 from datetime import timedelta
 
@@ -24,8 +25,12 @@ def create_admin_link(request: HttpRequest) -> JsonResponse:
     """
     token = ADMIN_TICKET_PREFIX + secrets.token_urlsafe(24)
     cache.set(f"admin_ticket:{token}", True, timeout=ADMIN_TICKET_TTL_SECONDS)
-    one_time_url = f"/admin-ticket/{token}/"
+    one_time_url = reverse("use-admin-link", args=[token])
     expires_at = (timezone.now() + timedelta(seconds=ADMIN_TICKET_TTL_SECONDS)).isoformat()
+    # Если браузер ожидает HTML (например, редирект после логина), сразу ведём в админку
+    accept = request.headers.get("Accept", "")
+    if "application/json" not in accept:
+        return redirect(one_time_url)
     return JsonResponse({"url": one_time_url, "expires_at": expires_at})
 
 def use_admin_link(request: HttpRequest, token: str):
@@ -38,6 +43,5 @@ def use_admin_link(request: HttpRequest, token: str):
         # активируем билет в сессии и сжигаем токен
         request.session["admin_ticket_ok"] = True
         cache.delete(key)
-        admin_url = "/" + getattr(settings, "ADMIN_URL", "admin/").lstrip("/")
-        return redirect(admin_url)
+        return redirect(reverse("admin:index"))
     return JsonResponse({"detail": "Expired or invalid link"}, status=404)
