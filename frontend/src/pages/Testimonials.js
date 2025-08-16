@@ -1,4 +1,3 @@
-// C:\Users\ASUS Vivobook\PycharmProjects\izotoff.ru\business_site\frontend\src\pages\Testimonials.js
 import { useEffect, useState } from "react";
 import api from "../Api";
 import "./Testimonials.css";
