@@ -18,9 +18,13 @@ export default function Login(){
   const submit = e => {
     e.preventDefault();
     setError("");
-    axios.post("/accounts/login/", form, {withCredentials:true})
-      .then(()=>{ window.location.href = "/admin-link/"; })
-      .catch(()=> setError("Неверные данные"));
+    axios
+      .post("/accounts/login/", form, { withCredentials: true })
+      .then(() => axios.get("/admin-link/", { withCredentials: true }))
+      .then((r) => {
+        window.location.href = r.data.url;
+      })
+      .catch(() => setError("Неверные данные"));
   };
 
   return (

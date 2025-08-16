@@ -59,10 +59,6 @@ def create_admin_link(request: HttpRequest) -> JsonResponse:
     cache.set(f"admin_ticket:{token}", True, timeout=ADMIN_TICKET_TTL_SECONDS)
     one_time_url = reverse("use-admin-link", args=[token])
     expires_at = (timezone.now() + timedelta(seconds=ADMIN_TICKET_TTL_SECONDS)).isoformat()
-    # Если браузер ожидает HTML (например, редирект после логина), сразу ведём в админку
-    accept = request.headers.get("Accept", "")
-    if "application/json" not in accept:
-        return redirect(one_time_url)
     return JsonResponse({"url": one_time_url, "expires_at": expires_at})
 
 def use_admin_link(request: HttpRequest, token: str):
