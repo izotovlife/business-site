@@ -44,6 +44,9 @@ urlpatterns = [
     path("api/docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
     path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
 
+    # Аутентификация (login/logout)
+    path("accounts/", include("django.contrib.auth.urls")),
+
     # Одноразовые ссылки на админку
     path("admin-link/", create_admin_link, name="create-admin-link"),        # отдать одноразовый URL (только staff)
     path("admin-ticket/<str:token>/", use_admin_link, name="use-admin-link"),# перейти по одноразовому URL
