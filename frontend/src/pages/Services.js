@@ -1,4 +1,3 @@
-// C:\Users\ASUS Vivobook\PycharmProjects\izotoff.ru\business_site\frontend\src\pages\Services.js
 import React, { useEffect, useState } from "react";
 import api from "../Api";
 import OrderModal from "../components/OrderModal";

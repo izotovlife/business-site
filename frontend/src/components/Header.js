@@ -1,4 +1,3 @@
-// C:\Users\ASUS Vivobook\PycharmProjects\izotoff.ru\business_site\frontend\src\components\Header.js
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import "./Header.css";

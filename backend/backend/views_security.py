@@ -1,11 +1,15 @@
 # backend/views_security.py
 import secrets
+import json
 from django.conf import settings
 from django.core.cache import cache
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse, HttpRequest
 from django.shortcuts import redirect
+from django.urls import reverse
 from django.utils import timezone
+from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from datetime import timedelta
 
 # Настройки одноразовых ссылок (можно вынести в settings)
@@ -14,6 +18,35 @@ ADMIN_TICKET_PREFIX = getattr(settings, "ADMIN_TICKET_PREFIX", "adm-")
 
 def staff_check(u):  # кто имеет право генерировать ссылку
     return u.is_active and u.is_staff
+
+@ensure_csrf_cookie
+@csrf_protect
+def api_login(request: HttpRequest) -> JsonResponse:
+    """API-логин для сотрудников."""
+    if request.method == "GET":
+        # отдаём CSRF cookie
+        return JsonResponse({"detail": "ok"})
+    if request.method != "POST":
+        return JsonResponse({"detail": "Method not allowed"}, status=405)
+    try:
+        data = json.loads(request.body or "{}")
+    except json.JSONDecodeError:
+        data = {}
+    username = data.get("username")
+    password = data.get("password")
+    user = authenticate(request, username=username, password=password)
+    if not user or not user.is_active or not user.is_staff:
+        return JsonResponse({"detail": "Invalid credentials"}, status=400)
+    login(request, user)
+    return JsonResponse({"detail": "ok"})
+
+@csrf_protect
+def api_logout(request: HttpRequest) -> JsonResponse:
+    """Выход из системы."""
+    if request.method != "POST":
+        return JsonResponse({"detail": "Method not allowed"}, status=405)
+    logout(request)
+    return JsonResponse({"detail": "ok"})
 
 @login_required
 @user_passes_test(staff_check)
@@ -24,7 +57,7 @@ def create_admin_link(request: HttpRequest) -> JsonResponse:
     """
     token = ADMIN_TICKET_PREFIX + secrets.token_urlsafe(24)
     cache.set(f"admin_ticket:{token}", True, timeout=ADMIN_TICKET_TTL_SECONDS)
-    one_time_url = f"/admin-ticket/{token}/"
+    one_time_url = reverse("use-admin-link", args=[token])
     expires_at = (timezone.now() + timedelta(seconds=ADMIN_TICKET_TTL_SECONDS)).isoformat()
     return JsonResponse({"url": one_time_url, "expires_at": expires_at})
 
@@ -38,6 +71,5 @@ def use_admin_link(request: HttpRequest, token: str):
         # активируем билет в сессии и сжигаем токен
         request.session["admin_ticket_ok"] = True
         cache.delete(key)
-        admin_url = "/" + getattr(settings, "ADMIN_URL", "admin/").lstrip("/")
-        return redirect(admin_url)
+        return redirect(reverse("admin:index"))
     return JsonResponse({"detail": "Expired or invalid link"}, status=404)
