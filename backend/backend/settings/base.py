@@ -1,9 +1,9 @@
-# backend/backend/settings.py
+# Назначение: базовые настройки Django проекта; path: backend/backend/settings/base.py; добавлены динамический внутренний путь админки, кэш и middleware.
 from pathlib import Path
 import os
 
 # === БАЗОВОЕ ===
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Секреты читаем из окружения, на dev есть дефолт
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-change-me")
@@ -15,6 +15,9 @@ if DEBUG:
 else:
     # Пример: ALLOWED_HOSTS="izotoff.ru,www.izotoff.ru"
     ALLOWED_HOSTS = [h.strip() for h in os.getenv("ALLOWED_HOSTS", "").split(",") if h.strip()]
+
+# Внутренний путь админки
+ADMIN_INTERNAL_PATH = "/_admin/"
 
 # === ПРИЛОЖЕНИЯ ===
 INSTALLED_APPS = [
@@ -32,6 +35,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
 
     # Local apps
+    "security",
     "core",
 ]
 
@@ -40,6 +44,7 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",  # ← строго до CommonMiddleware
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "security.middleware.DynamicAdminSlugMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -84,6 +89,11 @@ DATABASES = {
     }
 }
 
+# === КЭШ ===
+CACHES = {
+    "default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}
+}
+
 # === ПАРОЛИ ===
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
@@ -116,7 +126,7 @@ REST_FRAMEWORK = {
 
 # === CORS / CSRF ===
 if DEBUG:
-    # Удобно в dev: разрешаем все источники
+    # Удобно  dev: разрешаем все источники
     CORS_ALLOW_ALL_ORIGINS = True
 
     # Если используешь cookie/CSRF в браузере (админка/логин), доверь локальные фронты
