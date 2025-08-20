@@ -1,9 +1,12 @@
-# backend/backend/settings.py
+# backend/backend/settings/base.py
+# Назначение: базовые настройки Django-проекта. Путь: backend/backend/settings/base.py.
+# Изменения: вынесено из settings.py, добавлены ADMIN_INTERNAL_PATH, секция CACHES,
+# подключено приложение security и middleware DynamicAdminSlugMiddleware.
 from pathlib import Path
 import os
 
 # === БАЗОВОЕ ===
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Секреты читаем из окружения, на dev есть дефолт
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-change-me")
@@ -33,6 +36,7 @@ INSTALLED_APPS = [
 
     # Local apps
     "core",
+    "security.apps.SecurityConfig",
 ]
 
 # === MIDDLEWARE ===
@@ -40,6 +44,7 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",  # ← строго до CommonMiddleware
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "security.middleware.DynamicAdminSlugMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -68,6 +73,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "backend.wsgi.application"
 
+# === АДМИНКА ===
+# Физический путь, который маппится на динамический slug через middleware
+ADMIN_INTERNAL_PATH = "/_admin/"
+
 # === БАЗА ДАННЫХ ===
 # Dev: sqlite; Прод: можно переехать на Postgres (см. комментарии ниже)
 DATABASES = {
@@ -81,6 +90,13 @@ DATABASES = {
         # "PASSWORD": os.getenv("DB_PASSWORD", ""),
         # "HOST": os.getenv("DB_HOST", "127.0.0.1"),
         # "PORT": os.getenv("DB_PORT", "5432"),
+    }
+}
+
+# === КЭШ ===
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache"
     }
 }
 
