@@ -1,5 +1,8 @@
+# backend/core/views.py
 from django.conf import settings
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
+import logging
+from threading import Thread
 
 from rest_framework import viewsets, mixins, filters
 
@@ -10,6 +13,24 @@ from .serializers import (
     TestimonialSerializer,
     LeadSerializer,
 )
+
+log = logging.getLogger(__name__)
+
+
+def _send_mail_async(subject: str, body: str, to_email: str) -> None:
+    """
+    Неблокирующая отправка письма в отдельном потоке.
+    HTTP-ответ клиенту не ждёт SMTP.
+    """
+    def worker():
+        try:
+            msg = EmailMessage(subject=subject, body=body, to=[to_email])
+            # если в settings задан EMAIL_TIMEOUT — Django его применит
+            msg.send(fail_silently=True)
+        except Exception as e:
+            log.warning("Email sending failed: %s", e, exc_info=True)
+
+    Thread(target=worker, daemon=True).start()
 
 
 class ServiceSectionViewSet(viewsets.ModelViewSet):
@@ -46,15 +67,16 @@ class LeadViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
 
     def perform_create(self, serializer):
         lead = serializer.save()
-        # отправка уведомления на email
-        send_mail(
-            subject="Новая заявка с сайта",
-            message=(
-                f"Имя: {lead.name}\n"
-                f"Контакт: {lead.contact}\n"
-                f"Сообщение: {lead.message}"
-            ),
-            from_email=getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@example.com"),
-            recipient_list=[getattr(settings, "NOTIFY_TO", "izotovlife@yandex.ru")],
-            fail_silently=False,
+
+        # Формируем письмо
+        subject = "Новая заявка с сайта"
+        body = (
+            f"Имя: {lead.name}\n"
+            f"Контакт: {lead.contact}\n"
+            f"Сообщение: {lead.message}"
         )
+        from_email = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@example.com")
+        to_email = getattr(settings, "NOTIFY_TO", "izotovlife@yandex.ru")
+
+        # Стартуем отправку в фоне (не блокируя HTTP-ответ)
+        _send_mail_async(subject, body, to_email)
