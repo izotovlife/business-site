@@ -1,3 +1,5 @@
+#C:\Users\ASUS Vivobook\PycharmProjects\izotoff.ru\business_site\backend\core\serializers.py
+
 from rest_framework import serializers
 from .models import ServiceSection, PortfolioItem, Testimonial, Lead
 

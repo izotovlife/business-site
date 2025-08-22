@@ -1,4 +1,6 @@
 // Footer.js
+// frontend/src/components/Footer.js
+// Футер сайта с логотипом из public/logo.svg
 import React from "react";
 import "./Footer.css";
 
@@ -6,9 +8,19 @@ export default function Footer(){
   return (
     <footer className="site-footer">
       <div className="container footer-grid">
-        <div>
-          <div className="footer-brand">Изотов</div>
-          <p className="muted">Разработка сайтов и автоматизация для вашего бизнеса.</p>
+        <div className="footer-brand">
+          <img
+            className="footer-brand-img"
+            src="/logo.svg"
+            alt="IZOTOVLIFE"
+            height="32"
+            width="auto"
+            decoding="async"
+          />
+          <span className="footer-brand-title">IZOTOVLIFE</span>
+          <p className="muted">
+            Разработка сайтов и автоматизация для вашего бизнеса.
+          </p>
         </div>
 
         <div>
@@ -28,10 +40,12 @@ export default function Footer(){
           </ul>
         </div>
       </div>
+
       <div className="footbar">
-        <div className="container">© {new Date().getFullYear()} Изотов. Все права защищены.</div>
+        <div className="container">
+          © {new Date().getFullYear()} Изотов. Все права защищены.
+        </div>
       </div>
     </footer>
   );
 }
-
