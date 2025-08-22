@@ -1,8 +1,9 @@
 // C:\Users\ASUS Vivobook\PycharmProjects\izotoff.ru\business_site\frontend\src\App.js
 import React from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import Home from "./pages/Home";
 import Services from "./pages/Services";
 import Portfolio from "./pages/Portfolio";
 import Testimonials from "./pages/Testimonials";
@@ -14,7 +15,7 @@ export default function App(){
       <Header/>
       <main>
         <Routes>
-          <Route path="/" element={<Navigate to="/services" replace/>}/>
+          <Route path="/" element={<Home/>}/>
           <Route path="/services" element={<Services/>}/>
           <Route path="/portfolio" element={<Portfolio/>}/>
           <Route path="/testimonials" element={<Testimonials/>}/>
