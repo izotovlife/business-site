@@ -1,6 +1,6 @@
 // Footer.js
 // frontend/src/components/Footer.js
-// Футер сайта, логотип берётся из /public/logo192.png и /public/logo512.png
+// Футер сайта с логотипом из public/logo.svg
 import React from "react";
 import "./Footer.css";
 
@@ -11,13 +11,13 @@ export default function Footer(){
         <div className="footer-brand">
           <img
             className="footer-brand-img"
-            src="/logo192.png"
-            srcSet="/logo192.png 1x, /logo512.png 2x"
+            src="/logo.svg"
             alt="IZOTOVLIFE"
             height="32"
             width="auto"
             decoding="async"
           />
+          <span className="footer-brand-title">IZOTOVLIFE</span>
           <p className="muted">
             Разработка сайтов и автоматизация для вашего бизнеса.
           </p>
