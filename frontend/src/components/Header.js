@@ -1,6 +1,6 @@
 // frontend/src/components/Header.js
 
-// Шапка сайта, логотип берётся из /public/logo192.png и /public/logo512.png
+// Шапка сайта с логотипом из public/logo.svg
 import React, { useState } from "react";
 import { NavLink, Link } from "react-router-dom";
 import "./Header.css";
@@ -14,13 +14,13 @@ export default function Header() {
         <Link to="/" className="brand" onClick={() => setOpen(false)}>
           <img
             className="brand-img"
-            src="/logo192.png"
-            srcSet="/logo192.png 1x, /logo512.png 2x"
+            src="/logo.svg"
             alt="IZOTOVLIFE"
-            height="36"            // чуть меньше, как просили
+            height="36"
             width="auto"
             decoding="async"
           />
+          <span className="brand-title">IZOTOVLIFE</span>
         </Link>
 
         <button
