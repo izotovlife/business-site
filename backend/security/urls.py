@@ -1,15 +1,9 @@
-# Назначение: URL-ы security (выдача ссылки и «гейт»)
-# Путь: backend/security/urls.py
-
 from django.urls import path
-from .views import AdminLinkView, OpenAdminView
+from .views import create_admin_link, use_admin_link
 
 app_name = "security"
 
 urlpatterns = [
-    # JSON-эндпоинт → {"admin_url": "/admin/open/<token>/"}
-    path("api/admin-link", AdminLinkView.as_view(), name="admin_link"),
-
-    # Одноразовая ссылка, открывающая доступ к реальной админке
-    path("admin/open/<path:token>/", OpenAdminView.as_view(), name="open_admin"),
+    path("admin-link/", create_admin_link, name="create_admin_link"),
+    path("<slug:slug>/", use_admin_link, name="use_admin_link"),
 ]

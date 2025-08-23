@@ -19,8 +19,12 @@ class DynamicAdminSlugMiddleware:
     def __call__(self, request):
         path = request.path
 
-        # Разрешаем сам «гейт» и выдачу ссылки
-        if path.startswith("/admin/open/") or path.startswith("/api/admin-link"):
+        # Блокируем прямой доступ к публичному /admin
+        if path.startswith("/admin"):
+            raise Http404()
+
+        # Разрешаем выдачу ссылки
+        if path.startswith("/api/security/admin-link/"):
             return self.get_response(request)
 
         # Если это обращение к реальной админке — требуем флаг в сессии

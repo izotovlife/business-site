@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     # Local apps
     "security",
     "core",
+    "services",
 ]
 
 # === MIDDLEWARE ===
@@ -62,18 +63,13 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",  # ← строго до CommonMiddleware
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "security.middleware.DynamicAdminSlugMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
-
-# Опционально включаем динамическую ротацию slug (если явно задано ADMIN_DYNAMIC_SLUG=1)
-if ADMIN_DYNAMIC_SLUG:
-    # вставляем сразу после SessionMiddleware
-    insert_after = MIDDLEWARE.index("django.contrib.sessions.middleware.SessionMiddleware") + 1
-    MIDDLEWARE.insert(insert_after, "security.middleware.DynamicAdminSlugMiddleware")
 
 ROOT_URLCONF = "backend.urls"
 
@@ -174,15 +170,22 @@ SPECTACULAR_SETTINGS = {
 }
 
 # === ПОЧТА ===
-EMAIL_BACKEND = os.getenv("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
+if DEBUG:
+    EMAIL_BACKEND = os.getenv(
+        "EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend"
+    )
+else:
+    EMAIL_BACKEND = os.getenv(
+        "EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend"
+    )
 EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.yandex.ru")
 EMAIL_PORT = int(os.getenv("EMAIL_PORT", "465"))
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
 EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "0") == "1"
 EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", "1") == "1"
-EMAIL_TIMEOUT = int(os.getenv("EMAIL_TIMEOUT", "10"))  # сек, разумный таймаут для SMTP
-DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER or "noreply@example.com")
+EMAIL_TIMEOUT = int(os.getenv("EMAIL_TIMEOUT", "10"))
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "izotovlife@yandex.ru")
 NOTIFY_TO = os.getenv("NOTIFY_TO", "izotovlife@yandex.ru")
 
 
