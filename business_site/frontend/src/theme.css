@@ -2,9 +2,9 @@
   --bg:#ffffff;
   --text:#1e1e20;
   --muted:#6b7280;
-  --primary:#6d28d9;        /* фиолетовый */
-  --primary-600:#5b21b6;
-  --primary-50:#f5f3ff;
+  --primary:#004aad;        /* синий */
+  --primary-600:#003080;
+  --primary-50:#e0e8ff;
   --card:#ffffff;
   --border:#e5e7eb;
   --shadow:0 10px 25px rgba(0,0,0,.06);
@@ -39,7 +39,7 @@ img{max-width:100%; display:block}
   color:#fff; border:none; border-radius:12px; cursor:pointer;
   font-weight:600; letter-spacing:.2px;
   transition:transform .08s ease, box-shadow .2s ease, background .2s ease;
-  box-shadow: 0 6px 18px rgba(109,40,217,.25);
+  box-shadow: 0 6px 18px rgba(0,74,173,.25);
 }
 .btn:hover{ background:var(--primary-600) }
 .btn:active{ transform:translateY(1px) }
