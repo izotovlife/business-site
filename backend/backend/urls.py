@@ -32,7 +32,8 @@ urlpatterns = [
 
     # API
     path("api/v1/", include("core.urls")),
-    path("", include("security.urls")),  # /api/admin-link и /admin/open/<token>/
+    path("api/v1/", include("services.urls")),
+    path("api/security/", include("security.urls")),
 
     # OpenAPI
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),

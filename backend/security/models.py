@@ -1,5 +1,6 @@
 # Назначение: модель для хранения текущего slug админки; path: backend/security/models.py; реализует AdminGate singleton.
 from django.db import models
+from django.utils import timezone
 
 
 class AdminGate(models.Model):
@@ -14,3 +15,21 @@ class AdminGate(models.Model):
 
     def __str__(self) -> str:  # pragma: no cover
         return self.current_slug
+
+
+class AdminLink(models.Model):
+    slug = models.SlugField(unique=True)
+    is_active = models.BooleanField(default=True)
+    expires_at = models.DateTimeField()
+    issued_to_ip = models.GenericIPAddressField()
+    used_at = models.DateTimeField(null=True, blank=True)
+
+    def is_valid(self, ip: str) -> bool:
+        return (
+            self.is_active
+            and self.issued_to_ip == ip
+            and self.expires_at >= timezone.now()
+        )
+
+    def __str__(self):  # pragma: no cover
+        return self.slug

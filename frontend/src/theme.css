@@ -1,13 +1,13 @@
 :root{
-  --bg:#ffffff;
-  --text:#1e1e20;
-  --muted:#6b7280;
-  --primary:#004aad;        /* синий */
-  --primary-600:#003080;
-  --primary-50:#e0e8ff;
-  --card:#ffffff;
-  --border:#e5e7eb;
-  --shadow:0 10px 25px rgba(0,0,0,.06);
+  --bg:#0f172a;
+  --text:#f1f5f9;
+  --muted:#94a3b8;
+  --primary:#22d3ee;        /* cyan */
+  --primary-600:#0891b2;
+  --primary-50:#083344;
+  --card:#1e293b;
+  --border:#334155;
+  --shadow:0 10px 25px rgba(0,0,0,.5);
   --radius:16px;
   --container:1160px;
 }
