@@ -19,7 +19,10 @@ export default function OrderModal({ open, onClose, preset, serviceId }) {
     if (open) {
       api.get("/services/").then((res) => setServices(res.data));
       setForm((f) => ({ ...f, service: serviceId || "" }));
+<<<<<<< HEAD
       setStatus(null);
+=======
+>>>>>>> origin/main
     }
   }, [open, serviceId]);
 
@@ -48,10 +51,14 @@ export default function OrderModal({ open, onClose, preset, serviceId }) {
         consent: false,
         company: "",
       });
+<<<<<<< HEAD
       setTimeout(() => {
         onClose();
         setStatus(null);
       }, 1000);
+=======
+      setTimeout(onClose, 1000);
+>>>>>>> origin/main
     } catch (err) {
       setStatus("err");
     }

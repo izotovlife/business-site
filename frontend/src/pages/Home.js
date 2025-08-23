@@ -8,7 +8,11 @@ export default function Home(){
     <section className="home-hero">
       <div className="container center">
         <div className="home-content">
+<<<<<<< HEAD
           <img src="/logo.png" alt="IZOTOVLIFE" className="home-logo" />
+=======
+          <img src="/logo.svg" alt="IZOTOVLIFE" className="home-logo" />
+>>>>>>> origin/main
           <h1 className="home-title">IZOTOVLIFE</h1>
           <p className="home-tagline">Digital solutions crafted with passion</p>
         </div>
