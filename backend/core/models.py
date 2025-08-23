@@ -1,3 +1,5 @@
+#C:\Users\ASUS Vivobook\PycharmProjects\izotoff.ru\business_site\backend\core\models.py
+
 from django.db import models
 
 

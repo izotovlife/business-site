@@ -1,0 +1,24 @@
+.home-hero{
+  background:radial-gradient(circle at top,#1e293b,#0f172a);
+  padding:80px 0;
+  text-align:center;
+  color:#fff;
+}
+
+.home-logo{
+  width:120px;
+  margin:0 auto 20px;
+}
+
+.home-title{
+  font-size:clamp(32px,5vw,56px);
+  margin:0 0 12px;
+  color:#fff;
+}
+
+.home-tagline{
+  font-size:20px;
+  color:var(--muted);
+  margin:0;
+}
+

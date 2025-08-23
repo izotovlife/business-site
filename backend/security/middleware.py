@@ -1,24 +1,37 @@
-# Назначение: middleware для динамического slug админки; path: backend/security/middleware.py; переписывает внешний путь на внутренний.
-from django.http import Http404
-from django.utils.deprecation import MiddlewareMixin
+# Назначение: middleware, пропускающее в админку только после одноразовой ссылки
+# Путь: backend/security/middleware.py
+
 from django.conf import settings
+from django.http import Http404
 
-from .utils import get_current_slug
+class DynamicAdminSlugMiddleware:
+    """
+    Блокирует прямой доступ к реальной админке (/_admin/...)
+    пока не будет открыт «гейт» через одноразовую ссылку /admin/open/<token>/.
+    После успешного открытия во view ставится флаг в сессии.
+    """
+    def __init__(self, get_response):
+        self.get_response = get_response
+        # нормализуем префикс админки со слэшем в начале и конце
+        admin_path = settings.ADMIN_INTERNAL_PATH.strip("/")
+        self.admin_prefix = f"/{admin_path}/" if admin_path else "/_admin/"
 
+    def __call__(self, request):
+        path = request.path
 
-class DynamicAdminSlugMiddleware(MiddlewareMixin):
-    def process_request(self, request):
-        internal = settings.ADMIN_INTERNAL_PATH
-        if request.path.startswith(internal):
-            if not getattr(request, "_via_dynamic_admin", False):
-                raise Http404()
-            return
+        # Блокируем прямой доступ к публичному /admin
+        if path.startswith("/admin"):
+            raise Http404()
 
-        slug = get_current_slug()
-        slug_prefix = f"/{slug}"
-        if request.path == slug_prefix or request.path.startswith(slug_prefix + "/"):
-            tail = request.path[len(slug_prefix):] or "/"
-            new_path = internal.rstrip("/") + tail
-            request.path = new_path
-            request.path_info = new_path
-            request._via_dynamic_admin = True
+        # Разрешаем выдачу ссылки
+        if path.startswith("/api/security/admin-link/"):
+            return self.get_response(request)
+
+        # Если это обращение к реальной админке — требуем флаг в сессии
+        if path.startswith(self.admin_prefix):
+            if request.session.get("admin_gate_ok"):
+                return self.get_response(request)
+            # Нет флага — прячем админку
+            raise Http404()
+
+        return self.get_response(request)

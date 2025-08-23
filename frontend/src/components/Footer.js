@@ -1,37 +1,28 @@
-// Footer.js
-import React from "react";
+import React, { useState } from "react";
+import OrderModal from "./OrderModal";
 import "./Footer.css";
 
-export default function Footer(){
+export default function Footer() {
+  const [modal, setModal] = useState(false);
+
   return (
     <footer className="site-footer">
-      <div className="container footer-grid">
-        <div>
-          <div className="footer-brand">Изотов</div>
-          <p className="muted">Разработка сайтов и автоматизация для вашего бизнеса.</p>
-        </div>
-
-        <div>
-          <h4>Контакты</h4>
-          <ul className="list">
-            <li><a href="mailto:izotovlife@yandex.ru">izotovlife@yandex.ru</a></li>
-            <li><a href="https://t.me/izotovlife" target="_blank" rel="noreferrer">Telegram</a></li>
-          </ul>
-        </div>
-
-        <div>
-          <h4>Навигация</h4>
-          <ul className="list">
-            <li><a href="/services">Услуги</a></li>
-            <li><a href="/portfolio">Портфолио</a></li>
-            <li><a href="/testimonials">Отзывы</a></li>
-          </ul>
+      <div className="container footer-content">
+        <img src="/logo.png" alt="IZOTOVLIFE" className="site-logo" />
+        <div className="contacts">
+          <a href="tel:+79999999999">+7 (999) 999-99-99</a>
+          <a href="mailto:izotovlife@yandex.ru">izotovlife@yandex.ru</a>
+          <div className="social">
+            <a href="https://vk.com" target="_blank" rel="noreferrer">VK</a>
+            <a href="https://ok.ru" target="_blank" rel="noreferrer">OK</a>
+            <a href="https://t.me" target="_blank" rel="noreferrer">TG</a>
+          </div>
+          <button className="btn" onClick={() => setModal(true)}>
+            Заказать услугу
+          </button>
         </div>
       </div>
-      <div className="footbar">
-        <div className="container">© {new Date().getFullYear()} Изотов. Все права защищены.</div>
-      </div>
+      <OrderModal open={modal} onClose={() => setModal(false)} preset="footer" />
     </footer>
   );
 }
-

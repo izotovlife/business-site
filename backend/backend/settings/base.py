@@ -1,23 +1,40 @@
 # Назначение: базовые настройки Django проекта; path: backend/backend/settings/base.py; добавлены динамический внутренний путь админки, кэш и middleware.
+# Назначение: базовые настройки Django проекта
+# Файл: backend/backend/settings/base.py
+# Описание: централизованные настройки; загрузка .env; стабильный скрытый путь админки через ADMIN_INTERNAL_PATH;
+#           опциональная динамика slug через ADMIN_DYNAMIC_SLUG; кэш, DRF, CORS/CSRF, логирование.
+
 from pathlib import Path
 import os
 
 # === БАЗОВОЕ ===
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-# Секреты читаем из окружения, на dev есть дефолт
+# Загружаем переменные окружения из backend/.env (если python-dotenv установлен)
+try:
+    from dotenv import load_dotenv  # type: ignore
+    load_dotenv(BASE_DIR / ".env")
+except Exception:
+    # не критично для работы, просто пропустим, если пакет не установлен
+    pass
+
+# Секреты и режим
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-change-me")
 DEBUG = os.getenv("DEBUG", "1") == "1"
 
-# На dev — локальные хосты; на прод — читай ALLOWED_HOSTS из окружения
+# Хосты
 if DEBUG:
     ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 else:
     # Пример: ALLOWED_HOSTS="izotoff.ru,www.izotoff.ru"
     ALLOWED_HOSTS = [h.strip() for h in os.getenv("ALLOWED_HOSTS", "").split(",") if h.strip()]
 
-# Внутренний путь админки
-ADMIN_INTERNAL_PATH = "/_admin/"
+# --- Админка ---
+# Стабильный внутренний путь админки. Рекомендуется задать в .env, например:
+# ADMIN_INTERNAL_PATH=/jFCcgV9pTHS7Mf6U/
+ADMIN_INTERNAL_PATH = os.getenv("ADMIN_INTERNAL_PATH", "/_admin/").strip() or "/_admin/"
+# Включение динамического slug через middleware (по умолчанию выключено)
+ADMIN_DYNAMIC_SLUG = os.getenv("ADMIN_DYNAMIC_SLUG", "0") == "1"
 
 # === ПРИЛОЖЕНИЯ ===
 INSTALLED_APPS = [
@@ -37,9 +54,11 @@ INSTALLED_APPS = [
     # Local apps
     "security",
     "core",
+    "services",
 ]
 
 # === MIDDLEWARE ===
+# Базовый порядок; динамический slug при необходимости добавим ниже сразу после SessionMiddleware
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",  # ← строго до CommonMiddleware
     "django.middleware.security.SecurityMiddleware",
@@ -54,7 +73,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "backend.urls"
 
-# Шаблоны нужны для админки (сайт рендерить не будем)
+# Шаблоны (нужны для админки)
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -74,12 +93,12 @@ TEMPLATES = [
 WSGI_APPLICATION = "backend.wsgi.application"
 
 # === БАЗА ДАННЫХ ===
-# Dev: sqlite; Прод: можно переехать на Postgres (см. комментарии ниже)
+# Dev: sqlite; Прод: можно переехать на Postgres (см. комментарии)
 DATABASES = {
     "default": {
         "ENGINE": os.getenv("DB_ENGINE", "django.db.backends.sqlite3"),
         "NAME": os.getenv("DB_NAME", BASE_DIR / "db.sqlite3"),
-        # Для Postgres раскомментируй и задай в окружении:
+        # Для Postgres:
         # "ENGINE": "django.db.backends.postgresql",
         # "NAME": os.getenv("DB_NAME", "app"),
         # "USER": os.getenv("DB_USER", "app"),
@@ -111,7 +130,6 @@ USE_TZ = True
 # === СТАТИКА / МЕДИА ===
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"   # для collectstatic в проде
-
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
@@ -126,9 +144,8 @@ REST_FRAMEWORK = {
 
 # === CORS / CSRF ===
 if DEBUG:
-    # Удобно  dev: разрешаем все источники
+    # Dev: позволяем все источники
     CORS_ALLOW_ALL_ORIGINS = True
-
     # Если используешь cookie/CSRF в браузере (админка/логин), доверь локальные фронты
     CSRF_TRUSTED_ORIGINS = [
         "http://localhost:3000",
@@ -138,7 +155,6 @@ if DEBUG:
         "http://127.0.0.1:5173",
     ]
 else:
-    # В проде лучше белые списки из окружения
     def _env_list(name: str):
         return [x.strip() for x in os.getenv(name, "").split(",") if x.strip()]
 
@@ -154,18 +170,24 @@ SPECTACULAR_SETTINGS = {
 }
 
 # === ПОЧТА ===
-# Конфигурация SMTP для отправки писем (по умолчанию — Яндекс)
-EMAIL_BACKEND = os.getenv(
-    "EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend"
-)
+if DEBUG:
+    EMAIL_BACKEND = os.getenv(
+        "EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend"
+    )
+else:
+    EMAIL_BACKEND = os.getenv(
+        "EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend"
+    )
 EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.yandex.ru")
 EMAIL_PORT = int(os.getenv("EMAIL_PORT", "465"))
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
 EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "0") == "1"
 EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", "1") == "1"
-DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER or "noreply@example.com")
+EMAIL_TIMEOUT = int(os.getenv("EMAIL_TIMEOUT", "10"))
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "izotovlife@yandex.ru")
 NOTIFY_TO = os.getenv("NOTIFY_TO", "izotovlife@yandex.ru")
+
 
 # === БЕЗОПАСНОСТЬ (включится автоматически, когда DEBUG=0) ===
 if not DEBUG:
@@ -173,12 +195,12 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_HSTS_SECONDS = int(os.getenv("SECURE_HSTS_SECONDS", "3600"))
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_INCLUDE_SUBDOMАINS = True
     SECURE_HSTS_PRELOAD = True
     SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
     X_FRAME_OPTIONS = "DENY"
 
-# === ЛОГИРОВАНИЕ (полезно на dev и прод) ===
+# === ЛОГИРОВАНИЕ ===
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
 LOGGING = {
     "version": 1,

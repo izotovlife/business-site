@@ -1,4 +1,6 @@
-# Назначение: маршрутизация проекта; path: backend/backend/urls.py; оставлен внутренний путь админки и подключён API security.
+# Назначение: корневой роутинг проекта (важна строка подключения админки)
+# Путь: backend/backend/urls.py
+
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
@@ -30,17 +32,17 @@ urlpatterns = [
 
     # API
     path("api/v1/", include("core.urls")),
-    path("", include("security.urls")),
+    path("api/v1/", include("services.urls")),
+    path("api/security/", include("security.urls")),
 
     # OpenAPI
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path("api/docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
     path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
 
-    # Реальный скрытый путь админки
-    path(settings.ADMIN_INTERNAL_PATH.lstrip("/"), admin.site.urls),
+    # Реальный скрытый путь админки (ВАЖНО: слэш на конце)
+    path(f"{settings.ADMIN_INTERNAL_PATH.strip('/')}/", admin.site.urls),
 ]
 
-# Media в DEBUG
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

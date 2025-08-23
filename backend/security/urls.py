@@ -1,8 +1,9 @@
-# Назначение: URLы приложения security; path: backend/security/urls.py.
 from django.urls import path
+from .views import create_admin_link, use_admin_link
 
-from .views import AdminLinkView
+app_name = "security"
 
 urlpatterns = [
-    path("api/admin-link", AdminLinkView.as_view()),
+    path("admin-link/", create_admin_link, name="create_admin_link"),
+    path("<slug:slug>/", use_admin_link, name="use_admin_link"),
 ]
