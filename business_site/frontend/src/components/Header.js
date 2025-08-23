@@ -1,29 +1,55 @@
-// C:\Users\ASUS Vivobook\PycharmProjects\izotoff.ru\business_site\frontend\src\components\Header.js
-import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+// Путь: frontend/src/components/Header.js
+// Назначение: Шапка сайта-услуг с логотипом, навигацией и одной CTA-кнопкой
+
+import React from "react";
+import { Link } from "react-router-dom";
 import "./Header.css";
 
-export default function Header(){
-  const [open, setOpen] = useState(false);
-
+function Header() {
   return (
-    <header className="site-header">
-      <div className="container header-row">
-        <NavLink to="/" className="brand" onClick={()=>setOpen(false)}>
-          Изотов
-        </NavLink>
+    <header className="header">
+      <div className="container header__row">
+        {/* ЛОГО */}
+        <Link to="/" className="logoLink" aria-label="На главную">
+          <img src="/logo.png" alt="IZOTOVLIFE" className="logoImg" />
+        </Link>
 
-        <button className="burger" aria-label="Меню" onClick={()=>setOpen(v=>!v)}>
-          <span/><span/><span/>
-        </button>
-
-        <nav className={`nav ${open ? "open" : ""}`}>
-          <NavLink to="/services" className="nav-link" onClick={()=>setOpen(false)}>Услуги</NavLink>
-          <NavLink to="/portfolio" className="nav-link" onClick={()=>setOpen(false)}>Портфолио</NavLink>
-          <NavLink to="/testimonials" className="nav-link" onClick={()=>setOpen(false)}>Отзывы</NavLink>
+        {/* НАВИГАЦИЯ */}
+        <nav className="nav" aria-label="Основная навигация">
+          <Link to="/about" className="nav__link">О нас</Link>
+          <Link to="/services" className="nav__link">Услуги</Link>
+          <Link to="/portfolio" className="nav__link">Портфолио</Link>
+          <Link to="/contact" className="nav__link">Контакты</Link>
         </nav>
+
+        {/* ЕДИНСТВЕННАЯ CTA-КНОПКА */}
+        <div className="cta">
+          <Link to="/contact" className="btn btn--primary">Заказать услугу</Link>
+        </div>
+
+        {/* Мобильный бургер */}
+        <input id="navToggle" type="checkbox" className="navToggle" />
+        <label htmlFor="navToggle" className="burger" aria-label="Меню">
+          <span />
+          <span />
+          <span />
+        </label>
+
+        {/* Мобильное меню */}
+        <div className="mobileMenu">
+          <nav className="mobileMenu__nav" aria-label="Мобильная навигация">
+            <Link to="/about" className="mobileMenu__link">О нас</Link>
+            <Link to="/services" className="mobileMenu__link">Услуги</Link>
+            <Link to="/portfolio" className="mobileMenu__link">Портфолио</Link>
+            <Link to="/contact" className="mobileMenu__link">Контакты</Link>
+          </nav>
+          <div className="mobileMenu__cta">
+            <Link to="/contact" className="btn btn--primary">Заказать услугу</Link>
+          </div>
+        </div>
       </div>
     </header>
   );
 }
 
+export default Header;

@@ -1,18 +1,21 @@
-.site-footer{
-  margin-top:56px; border-top:1px solid var(--border); background:var(--primary-50);
+.footer {
+  background: #111;
+  padding: 20px 0;
+  text-align: center;
 }
-.footer-grid{
-  display:grid; gap:24px; padding-block:26px;
+
+.footer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-@media (min-width:760px){ .footer-grid{ grid-template-columns:2fr 1fr 1fr } }
 
-.footer-brand{ font-weight:800; font-size:20px; color:var(--primary); margin-bottom:6px }
-.list{ list-style:none; padding:0; margin:0 }
-.list li{ margin:8px 0 }
-.list a{ color:var(--text) }
-.list a:hover{ color:var(--primary) }
+.footer-logo {
+  height: 30px;
+  margin-bottom: 10px;
+}
 
-.footbar{
-  border-top:1px dashed var(--border); font-size:14px; color:var(--muted);
-  padding:10px 0;
+.footer-text {
+  color: #aaa;
+  font-size: 14px;
 }

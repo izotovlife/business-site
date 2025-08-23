@@ -46,19 +46,15 @@ class LeadViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
 
     def perform_create(self, serializer):
         lead = serializer.save()
-        # отправка уведомления (в dev можно не настраивать SMTP —
-        # письма просто пропустим благодаря fail_silently=True)
-        try:
-            send_mail(
-                subject="Новая заявка с сайта",
-                message=(
-                    f"Имя: {lead.name}\n"
-                    f"Контакт: {lead.contact}\n"
-                    f"Сообщение: {lead.message}"
-                ),
-                from_email=getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@example.com"),
-                recipient_list=[getattr(settings, "NOTIFY_TO", "izotovlife@yandex.ru")],
-                fail_silently=True,
-            )
-        except Exception:
-            pass
+        # отправка уведомления на email
+        send_mail(
+            subject="Новая заявка с сайта",
+            message=(
+                f"Имя: {lead.name}\n"
+                f"Контакт: {lead.contact}\n"
+                f"Сообщение: {lead.message}"
+            ),
+            from_email=getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@example.com"),
+            recipient_list=[getattr(settings, "NOTIFY_TO", "izotovlife@yandex.ru")],
+            fail_silently=False,
+        )
