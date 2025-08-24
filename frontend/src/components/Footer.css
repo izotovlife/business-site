@@ -19,6 +19,10 @@
 .list a{ color:#e5e7eb }
 .list a:hover{ color:#fff }
 
+.social{ display:flex; gap:8px; margin-top:8px }
+.social a{ color:#e5e7eb }
+.social a:hover{ color:#fff }
+
 .footbar{
   border-top:1px solid rgba(255,255,255,0.1);
   font-size:14px;

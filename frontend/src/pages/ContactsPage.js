@@ -6,8 +6,9 @@ export default function ContactsPage() {
   return (
     <div className="container">
       <h1>Контакты</h1>
-      <p>Телефон: <a href="tel:+79999999999">+7 (999) 999-99-99</a></p>
+      <p>Телефон: <a href="tel:+79267769268">+7 (926) 776-92-68</a></p>
       <p>Email: <a href="mailto:izotovlife@yandex.ru">izotovlife@yandex.ru</a></p>
+      <p>Адрес: Москва, м. Орехово</p>
       <div>
         <button className="btn" onClick={() => setOpen(true)}>
           Заказать услугу

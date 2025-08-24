@@ -6,6 +6,8 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import ServiceListPage from "./pages/ServiceListPage";
 import ContactsPage from "./pages/ContactsPage";
+import PortfolioPage from "./pages/PortfolioPage";
+import AdminRedirect from "./pages/AdminRedirect.jsx";
 import "./theme.css";
 
 export default function App(){
@@ -16,7 +18,9 @@ export default function App(){
         <Routes>
           <Route path="/" element={<Home/>}/>
           <Route path="/services" element={<ServiceListPage/>}/>
+          <Route path="/portfolio" element={<PortfolioPage/>}/>
           <Route path="/contacts" element={<ContactsPage/>}/>
+          <Route path="/admin" element={<AdminRedirect/>} />
           <Route path="*" element={<div className="container">Страница не найдена</div>} />
         </Routes>
       </main>
