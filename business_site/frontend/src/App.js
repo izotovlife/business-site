@@ -1,27 +1,33 @@
-// C:\Users\ASUS Vivobook\PycharmProjects\izotoff.ru\business_site\frontend\src\App.js
+// frontend/src/App.js
 import React from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import Services from "./pages/Services";
-import Portfolio from "./pages/Portfolio";
-import Testimonials from "./pages/Testimonials";
+import Home from "./pages/Home";
+import ServiceListPage from "./pages/ServiceListPage";
+import ContactsPage from "./pages/ContactsPage";
+import PortfolioPage from "./pages/PortfolioPage";
+import AdminRedirect from "./pages/AdminRedirect.jsx";
+import { OrderModalProvider } from "./OrderModalContext";
 import "./theme.css";
 
-export default function App(){
+export default function App() {
   return (
     <BrowserRouter>
-      <Header/>
-      <main>
-        <Routes>
-          <Route path="/" element={<Navigate to="/services" replace/>}/>
-          <Route path="/services" element={<Services/>}/>
-          <Route path="/portfolio" element={<Portfolio/>}/>
-          <Route path="/testimonials" element={<Testimonials/>}/>
-          <Route path="*" element={<div className="container">Страница не найдена</div>} />
-        </Routes>
-      </main>
-      <Footer/>
+      <OrderModalProvider>
+        <Header />
+        <main>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/services" element={<ServiceListPage />} />
+            <Route path="/portfolio" element={<PortfolioPage />} />
+            <Route path="/contacts" element={<ContactsPage />} />
+            <Route path="/admin" element={<AdminRedirect />} />
+            <Route path="*" element={<div className="container">Страница не найдена</div>} />
+          </Routes>
+        </main>
+        <Footer />
+      </OrderModalProvider>
     </BrowserRouter>
   );
 }

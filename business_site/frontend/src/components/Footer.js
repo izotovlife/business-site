@@ -1,24 +1,17 @@
-// Footer.js
-// Путь: frontend/src/components/Footer.js
-// Назначение: Нижний колонтитул сайта с логотипом и копирайтом
-
+// frontend/src/components/Footer.js
 import React from "react";
+import { useOrderModal } from "../OrderModalContext";
 import "./Footer.css";
 
-function Footer() {
-  return (
-    <footer className="footer">
-      <div className="container footer-container">
-        {/* Логотип в футере */}
-        <a href="/" className="footer-logo-link">
-          <img src="/logo.png" alt="IZOTOVLIFE Logo" className="footer-logo" />
-        </a>
+export default function Footer() {
+  const { open } = useOrderModal();
 
-        {/* Копирайт */}
-        <p className="footer-text">© 2025 IZOTOVLIFE. Все права защищены.</p>
+  return (
+    <footer className="site-footer">
+      <div className="container footer-row">
+        <div className="copyright">© {new Date().getFullYear()} IZOTOVLIFE</div>
+        <button className="btn" onClick={open}>Оставить заявку</button>
       </div>
     </footer>
   );
 }
-
-export default Footer;

@@ -72,3 +72,6 @@ img{max-width:100%; display:block}
 /* helpers */
 .center{ display:flex; align-items:center; justify-content:center}
 .muted{ color:var(--muted) }
+/* базовые удобства */
+img { display: block; }
+.container { width: min(1120px, 92%); margin: 0 auto; }

@@ -1,14 +1,94 @@
-.header {
-  background: #000; /* черный фон */
-  padding: 10px 0;
+/* frontend/src/components/Header.css */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: #fff;
 }
 
-.header-container {
+.container.header-row {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 16px 0;
+  position: relative;
 }
 
-.logo {
-  height: 40px; /* регулируй размер */
+/* Бренд */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+  min-width: 0;
+}
+.brand-img {
+  width: 40px;
+  height: 40px;
+  display: block;
+  object-fit: contain;
+}
+.brand-title {
+  font-weight: 700;
+  letter-spacing: .5px;
+}
+
+/* Навигация */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.nav-link {
+  text-decoration: none;
+  color: #1f2937;
+  opacity: .9;
+}
+.nav-link:hover { opacity: 1; }
+.nav-link.active { font-weight: 600; }
+
+/* CTA */
+.btn {
+  padding: 10px 18px;
+  border-radius: 12px;
+  background: #0b57d0;
+  color: #fff;
+  border: 0;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Бургер скрыт на десктопе */
+.burger {
+  display: none;
+  width: 40px; height: 40px;
+  justify-content: center; align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: 0;
+}
+.burger span {
+  display: block;
+  width: 20px; height: 2px;
+  background: #1f2937;
+}
+
+/* Мобилка */
+@media (max-width: 960px) {
+  .nav { display: none; }
+  .nav.open {
+    display: flex;
+    position: absolute;
+    top: 64px;
+    left: 0; right: 0;
+    flex-direction: column;
+    gap: 12px;
+    background: #fff;
+    padding: 12px 16px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.08);
+  }
+  .burger { display: inline-flex; }
 }

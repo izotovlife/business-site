@@ -1,10 +1,10 @@
-// src/Api.js
+// frontend/src/Api.js
 import axios from "axios";
 
-// CRA dev-server с "proxy" в package.json отправит запросы на бэкенд.
-// В проде можно заменить baseURL на ваш домен, например '/api/v1'.
 const api = axios.create({
   baseURL: "/api/v1",
+  headers: { "Content-Type": "application/json" },
+  // withCredentials: true, // включи, если бэкенд использует сессии/куки
 });
 
 export default api;

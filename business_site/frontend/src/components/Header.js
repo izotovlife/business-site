@@ -1,55 +1,47 @@
 // Путь: frontend/src/components/Header.js
-// Назначение: Шапка сайта-услуг с логотипом, навигацией и одной CTA-кнопкой
+// Назначение: Шапка с логотипом, навигацией и ОДНОЙ кнопкой, открывающей глобальную модалку
 
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
+import { useOrderModal } from "../OrderModalContext";
 import "./Header.css";
 
-function Header() {
-  return (
-    <header className="header">
-      <div className="container header__row">
-        {/* ЛОГО */}
-        <Link to="/" className="logoLink" aria-label="На главную">
-          <img src="/logo.png" alt="IZOTOVLIFE" className="logoImg" />
-        </Link>
+export default function Header() {
+  const [open, setOpen] = useState(false);
+  const { open: openOrder } = useOrderModal();        // глобальная модалка
+  const closeMenu = () => setOpen(false);
 
-        {/* НАВИГАЦИЯ */}
-        <nav className="nav" aria-label="Основная навигация">
-          <Link to="/about" className="nav__link">О нас</Link>
-          <Link to="/services" className="nav__link">Услуги</Link>
-          <Link to="/portfolio" className="nav__link">Портфолио</Link>
-          <Link to="/contact" className="nav__link">Контакты</Link>
+  return (
+    <header className="site-header">
+      <div className="container header-row">
+        {/* Логотип */}
+        <NavLink to="/" className="brand" onClick={closeMenu} aria-label="На главную">
+          {/* В репозитории есть logo.svg — используем его, чтобы не ловить 404 */}
+          <img src="/logo.svg" alt="IZOTOVLIFE" className="brand-img" />
+          <span className="brand-title">IZOTOVLIFE</span>
+        </NavLink>
+
+        {/* Навигация */}
+        <nav className={`nav ${open ? "open" : ""}`} aria-label="Основная навигация">
+          <NavLink to="/services" className={({isActive}) => `nav-link${isActive ? " active" : ""}`} onClick={closeMenu}>
+            Услуги
+          </NavLink>
+          <NavLink to="/portfolio" className={({isActive}) => `nav-link${isActive ? " active" : ""}`} onClick={closeMenu}>
+            Портфолио
+          </NavLink>
+          <NavLink to="/contacts" className={({isActive}) => `nav-link${isActive ? " active" : ""}`} onClick={closeMenu}>
+            Контакты
+          </NavLink>
         </nav>
 
-        {/* ЕДИНСТВЕННАЯ CTA-КНОПКА */}
-        <div className="cta">
-          <Link to="/contact" className="btn btn--primary">Заказать услугу</Link>
-        </div>
+        {/* ОДНА CTA-кнопка — открывает глобальную форму */}
+        <button className="btn" onClick={openOrder}>Заказать услугу</button>
 
-        {/* Мобильный бургер */}
-        <input id="navToggle" type="checkbox" className="navToggle" />
-        <label htmlFor="navToggle" className="burger" aria-label="Меню">
-          <span />
-          <span />
-          <span />
-        </label>
-
-        {/* Мобильное меню */}
-        <div className="mobileMenu">
-          <nav className="mobileMenu__nav" aria-label="Мобильная навигация">
-            <Link to="/about" className="mobileMenu__link">О нас</Link>
-            <Link to="/services" className="mobileMenu__link">Услуги</Link>
-            <Link to="/portfolio" className="mobileMenu__link">Портфолио</Link>
-            <Link to="/contact" className="mobileMenu__link">Контакты</Link>
-          </nav>
-          <div className="mobileMenu__cta">
-            <Link to="/contact" className="btn btn--primary">Заказать услугу</Link>
-          </div>
-        </div>
+        {/* Бургер для мобилок */}
+        <button className="burger" aria-label="Меню" onClick={() => setOpen(!open)}>
+          <span></span><span></span><span></span>
+        </button>
       </div>
     </header>
   );
 }
-
-export default Header;
