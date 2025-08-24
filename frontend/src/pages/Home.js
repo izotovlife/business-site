@@ -1,18 +1,28 @@
 // frontend/src/pages/Home.js
 // Главная страница с героем и логотипом
-import React from "react";
+import React, { useState } from "react";
+import OrderModal from "../components/OrderModal";
 import "./Home.css";
 
-export default function Home(){
+export default function Home() {
+  const [open, setOpen] = useState(false);
+
   return (
     <section className="home-hero">
       <div className="container center">
         <div className="home-content">
-          <img src="/logo.svg" alt="IZOTOVLIFE" className="home-logo" />
-          <h1 className="home-title">IZOTOVLIFE</h1>
-          <p className="home-tagline">Digital solutions crafted with passion</p>
+          <h1 className="home-title">Александр Изотов</h1>
+          <p className="home-tagline">
+            Администрирование сайтов, контент и SMM
+          </p>
+          <div className="home-actions">
+            <button className="btn" onClick={() => setOpen(true)}>
+              Оставить заявку
+            </button>
+          </div>
         </div>
       </div>
+      <OrderModal open={open} onClose={() => setOpen(false)} preset="home" />
     </section>
   );
 }

@@ -1,27 +1,39 @@
 import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
 import OrderModal from "./OrderModal";
 import "./Footer.css";
 
 export default function Footer() {
   const [modal, setModal] = useState(false);
+  const year = new Date().getFullYear();
 
   return (
     <footer className="site-footer">
-      <div className="container footer-content">
-        <img src="/logo.png" alt="IZOTOVLIFE" className="site-logo" />
-        <div className="contacts">
-          <a href="tel:+79999999999">+7 (999) 999-99-99</a>
+      <div className="container footer-grid">
+        <div className="footer-brand">
+          <img src="/logo.svg" alt="IZOTOVLIFE" className="footer-brand-img" />
+          <span className="footer-brand-title">IZOTOVLIFE</span>
+        </div>
+
+        <ul className="list">
+          <li><NavLink to="/services">Услуги</NavLink></li>
+          <li><NavLink to="/portfolio">Портфолио</NavLink></li>
+          <li><NavLink to="/contacts">Контакты</NavLink></li>
+        </ul>
+
+        <div className="list">
+          <p>Москва, м. Орехово</p>
+          <a href="tel:+79267769268">+7 (926) 776-92-68</a>
           <a href="mailto:izotovlife@yandex.ru">izotovlife@yandex.ru</a>
           <div className="social">
-            <a href="https://vk.com" target="_blank" rel="noreferrer">VK</a>
-            <a href="https://ok.ru" target="_blank" rel="noreferrer">OK</a>
-            <a href="https://t.me" target="_blank" rel="noreferrer">TG</a>
+            <a href="https://m.vk.com/itactprint" target="_blank" rel="noreferrer">VK</a>
+            <a href="https://ok.ru/itactprint" target="_blank" rel="noreferrer">OK</a>
+            <a href="https://t.me/copyzongroup" target="_blank" rel="noreferrer">TG</a>
           </div>
-          <button className="btn" onClick={() => setModal(true)}>
-            Заказать услугу
-          </button>
+          <button className="btn" onClick={() => setModal(true)}>Заказать услугу</button>
         </div>
       </div>
+      <div className="container footbar">© {year} IZOTOVLIFE</div>
       <OrderModal open={modal} onClose={() => setModal(false)} preset="footer" />
     </footer>
   );
