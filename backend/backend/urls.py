@@ -29,6 +29,7 @@ urlpatterns = [
     # Служебные
     path("", index, name="index"),
     path("health/", health, name="health"),
+    path("accounts/", include("django.contrib.auth.urls")),
 
     # API
     path("api/v1/", include("core.urls")),
