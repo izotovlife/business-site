@@ -26,7 +26,11 @@ export default function OrderModal({ open, onClose, preset, serviceId }) {
 
   const submit = async (e) => {
     e.preventDefault();
-    if (form.company) return; // honeypot
+    if (form.company) return; // honeypот
+    if (!form.name || (!form.phone && !form.email) || !form.consent) {
+      setStatus("fill");
+      return;
+    }
     setStatus("loading");
     try {
       await api.post(`/leads/?src=${preset || "site"}`, {
@@ -61,6 +65,7 @@ export default function OrderModal({ open, onClose, preset, serviceId }) {
           <input
             placeholder="Ваше имя"
             value={form.name}
+            required
             onChange={(e) => setForm({ ...form, name: e.target.value })}
           />
           <input
@@ -108,6 +113,9 @@ export default function OrderModal({ open, onClose, preset, serviceId }) {
           </button>
           {status === "ok" && <div className="hint ok">Заявка отправлена</div>}
           {status === "err" && <div className="hint err">Ошибка отправки</div>}
+          {status === "fill" && (
+            <div className="hint err">Заполните обязательные поля и дайте согласие</div>
+          )}
         </form>
         <button className="modal-close" onClick={onClose} aria-label="Закрыть">
           ×

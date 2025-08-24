@@ -6,21 +6,28 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import ServiceListPage from "./pages/ServiceListPage";
 import ContactsPage from "./pages/ContactsPage";
+import PortfolioPage from "./pages/PortfolioPage";
+import AdminRedirect from "./pages/AdminRedirect.jsx";
+import { OrderModalProvider } from "./OrderModalContext";
 import "./theme.css";
 
 export default function App(){
   return (
     <BrowserRouter>
-      <Header/>
-      <main>
-        <Routes>
-          <Route path="/" element={<Home/>}/>
-          <Route path="/services" element={<ServiceListPage/>}/>
-          <Route path="/contacts" element={<ContactsPage/>}/>
-          <Route path="*" element={<div className="container">Страница не найдена</div>} />
-        </Routes>
-      </main>
-      <Footer/>
+      <OrderModalProvider>
+        <Header/>
+        <main>
+          <Routes>
+            <Route path="/" element={<Home/>}/>
+            <Route path="/services" element={<ServiceListPage/>}/>
+            <Route path="/portfolio" element={<PortfolioPage/>}/>
+            <Route path="/contacts" element={<ContactsPage/>}/>
+            <Route path="/admin" element={<AdminRedirect/>} />
+            <Route path="*" element={<div className="container">Страница не найдена</div>} />
+          </Routes>
+        </main>
+        <Footer/>
+      </OrderModalProvider>
     </BrowserRouter>
   );
 }

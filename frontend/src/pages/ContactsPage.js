@@ -1,19 +1,19 @@
-import React, { useState } from "react";
-import OrderModal from "../components/OrderModal";
+import React from "react";
+import { useOrderModal } from "../OrderModalContext";
 
 export default function ContactsPage() {
-  const [open, setOpen] = useState(false);
+  const { openModal } = useOrderModal();
   return (
     <div className="container">
       <h1>Контакты</h1>
-      <p>Телефон: <a href="tel:+79999999999">+7 (999) 999-99-99</a></p>
+      <p>Телефон: <a href="tel:+79267769268">+7 (926) 776-92-68</a></p>
       <p>Email: <a href="mailto:izotovlife@yandex.ru">izotovlife@yandex.ru</a></p>
+      <p>Адрес: Москва, м. Орехово</p>
       <div>
-        <button className="btn" onClick={() => setOpen(true)}>
+        <button className="btn" onClick={() => openModal("page") }>
           Заказать услугу
         </button>
       </div>
-      <OrderModal open={open} onClose={() => setOpen(false)} preset="page" />
     </div>
   );
 }
